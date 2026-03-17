@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杜 绝不no 开心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #fff;
+            transition: background 1s;
+            position: relative;
+        }
+        
+        .emoji {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-image: url("https://zsq.im/game/huaji/hj.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            animation: appearFade 6s linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes appearFade {
+            0% { transform: scale(0.2); opacity: 1; }
+            100% { transform: scale(6); opacity: 0; }
+        }
+
+        #startPage {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #startPage h1 {
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .btn {
+            padding: 20px 50px;
+            font-size: 22px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 12px;
+            transition: all 0.3s;
+        }
+
+        #btnHappy {
+            background: #ff69b4;
+            color: white;
+        }
+
+        #btnSad {
+            background: #888;
+            color: white;
+        }
+        
+        #safeBox {
+            position: fixed;
+            right: 24px; bottom: 24px;
+            width: 90px; height: 90px;
+            background: #444;
+            border-radius: 16px;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            z-index: 100;
+        }
+        #safeBox:active {
+            transform: scale(0.95);
+        }
+
+        #keypad {
+            position: fixed;
+            bottom: 120px; right: 24px;
+            width: 260px;
+            background: #333;
+            padding: 20px;
+            border-radius: 20px;
+            display: none;
+            z-index: 999;
+        }
+
+        #password {
+            width: 100%;
+            height: 48px;
+            font-size: 24px;
+            text-align: center;
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 14px;
+        }
+
+        .keys {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .keyBtn {
+            padding: 14px;
+            font-size: 20px;
+            background: #555;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .keyBtn:active {
+            background: #777;
+        }
+        
+        #control {
+            position: fixed;
+            left: 24px; bottom: 24px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            font-size: 15px;
+            z-index: 200;
+        }
+        #density {
+            -webkit-appearance: none;
+            width: 140px;
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            outline: none;
+        }
+        #density::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            background: #ff69b4;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .birthdayBg {
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+        }
+        
+        #cakeWrapper {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+        #centerCake {
+            width: 600px;
+            height: 600px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body>
+
+<div id="startPage">
+    <h1>今天你开心吗？</h1>
+    <button class="btn" id="btnHappy">开心</button>
+    <button class="btn" id="btnSad">不开心</button>
+</div>
+
+<div id="safeBox">保险箱</div>
+
+<div id="keypad">
+    <input type="text" id="password" maxlength="4" placeholder="密码">
+    <div class="keys">
+        <button class="keyBtn" onclick="input(1)">1</button>
+        <button class="keyBtn" onclick="input(2)">2</button>
+        <button class="keyBtn" onclick="input(3)">3</button>
+        <button class="keyBtn" onclick="input(4)">4</button>
+        <button class="keyBtn" onclick="input(5)">5</button>
+        <button class="keyBtn" onclick="input(6)">6</button>
+        <button class="keyBtn" onclick="input(7)">7</button>
+        <button class="keyBtn" onclick="input(8)">8</button>
+        <button class="keyBtn" onclick="input(9)">9</button>
+        <button class="keyBtn" onclick="clearPwd()">清空</button>
+        <button class="keyBtn" onclick="input(0)">0</button>
+        <button class="keyBtn" onclick="checkPwd()">确定</button>
+    </div>
+</div>
+
+<div id="control">
+    密度：<input type="range" id="density" min="200" max="1200" value="500">
+</div>
+
+<div id="cakeWrapper">
+    <img id="centerCake" src="https://s41.ax1x.com/2026/03/17/peZ4pz8.png">
+</div>
+
+<script>
+    let interval = null;
+    let isBirthday = false;
+    let sadClickCount = 0;
+
+    document.getElementById('btnHappy').onclick = () => {
+        start();
+    };
+
+    document.getElementById('btnSad').onclick = () => {
+        sadClickCount++;
+        let btnSad = document.getElementById('btnSad');
+        let btnHappy = document.getElementById('btnHappy');
+
+        btnSad.style.position = 'absolute';
+        let maxX = window.innerWidth - btnSad.offsetWidth;
+        let maxY = window.innerHeight - btnSad.offsetHeight;
+        btnSad.style.left = Math.random() * maxX + 'px';
+        btnSad.style.top = Math.random() * maxY + 'px';
+
+        btnHappy.style.transform = 'scale(1.15)';
+        btnSad.style.transform = 'scale(' + Math.max(0.3, 1 - sadClickCount * 0.15) + ')';
+
+        if (sadClickCount >= 5) {
+            btnSad.style.display = 'none';
+        }
+    };
+
+    function start() {
+        document.getElementById('startPage').style.display = 'none';
+        restartAnimation();
+    }
+
+    function restartAnimation() {
+        if (interval) clearInterval(interval);
+        let val = document.getElementById('density').value;
+        let speed = 1300 - val;
+        interval = setInterval(createEmoji, speed);
+    }
+
+    document.getElementById('density').addEventListener('input', restartAnimation);
+
+    function createEmoji() {
+        if (isBirthday) return;
+        let div = document.createElement('div');
+        div.className = 'emoji';
+        div.style.left = Math.random() * 100 + 'vw';
+        div.style.top = Math.random() * 100 + 'vh';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 6000);
+    }
+
+    document.getElementById('safeBox').onclick = () => {
+        document.getElementById('keypad').style.display = 'block';
+    };
+
+    function input(n) {
+        let ipt = document.getElementById('password');
+        if (ipt.value.length < 4) ipt.value += n;
+    }
+
+    function clearPwd() {
+        document.getElementById('password').value = '';
+    }
+
+    function checkPwd() {
+        if (document.getElementById('password').value === '0214') {
+            isBirthday = true;
+            clearInterval(interval);
+
+            document.body.classList.add('birthdayBg');
+            document.getElementById('cakeWrapper').style.display = 'flex';
+
+            document.getElementById('keypad').style.display = 'none';
+            document.getElementById('safeBox').style.display = 'none';
+            document.getElementById('control').style.display = 'none';
+
+            alert('密码正确！生日快乐🎂');
+        } else {
+            alert('密码错误');
+            clearPwd();
+        }
+    }
+</script>
+</body>
+</html>
